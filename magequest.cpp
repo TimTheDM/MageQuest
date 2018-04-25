@@ -74,6 +74,7 @@ class enemy {
   int strength;
   int magic;
   int aP;
+  bool isAlive = true;
   string actionQue[4];
   string type;
   string name;
@@ -82,10 +83,23 @@ class enemy {
 //--------------------
 
 //-----Prototypes-----
+void displayBattle (enemy*, Mage);
 string lowerCase(string);
 int calculateDamage(int);
 enemy* createEncounter(string, string, string, string, string, string);
 //--------------------
+
+void displayBattle (enemy * encounter, Mage curMage) {
+  cout << "-------------Enemies-------------\n";
+  for (int i = 0;i < 3;i++) {
+    if (encounter[i].isAlive) {
+      cout << encounter[i].name << " HP:" << encounter[i].health << "\n";
+    }
+  }
+  cout << "-------------The Mage------------\n";
+  cout << "HP:" << curMage.health << "/20 MP:" << curMage.magic << "\n";
+  cout << "Actions: Attack | Quaff\n" << "Spells: Mystic missile | Heal | Defense Up | Fireball\n";
+}
 
 enemy::enemy (string type, string name) {
   if (type == "goblin") {
@@ -133,5 +147,5 @@ int main() {
   enemy test("goblin", "gobbo");
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblin", "goblinB", "goblin", "goblinC");
   cout << encounter1[0].health << "\n";
-  
+  displayBattle(encounter1, theMage);
 }
