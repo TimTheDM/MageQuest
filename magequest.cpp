@@ -121,13 +121,17 @@ bool battle(enemy * theEncounter) {
   bool battleRages = true;
   while (battleRages) {
     displayBattle(theEncounter, theMage);
+    cout << "What action shall you take: ";
     string action = getPlayerAction();
     string target = "Mage";
     if (action == "attack" || action == "mystic missile") {
+      cout << "Who do you target: ";
       target = getTarget(theEncounter);
     }
+    cout << "\n-------------Action--------------\n";
     actionHandler(action, target, theEncounter);
     enemyTurn(theEncounter);
+    cout << "---------------------------------\n\n";
     bool enemiesLive = false;
     for (int i = 0;i < 3;i++) {
       if (theEncounter[i].isAlive == true) {
@@ -202,7 +206,7 @@ void actionHandler(string action, string target, enemy * enc) {
 
 void mageAttack (enemy * tar) {
   int damage = calculateDamage(theMage.strength);
-  cout << "The mage strikes and inflicts " << damage << " damage!\n";
+  cout << "The mage strikes " << tar->name << " inflicting, "  << damage << " damage!\n";
   tar->health -= (damage-tar->defense);
   if (tar->health < 1) tar->isAlive = false;
 }
