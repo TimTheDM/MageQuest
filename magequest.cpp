@@ -74,6 +74,7 @@ class Mage{
   int defense = 0;
   int strength = 5;
   int magic = 30;
+  bool isAlive = true;
 } theMage;
 
 class enemy {
@@ -93,7 +94,7 @@ class enemy {
 
 //-----Prototypes-----
 void enemyTurn(enemy*);
-void battle(enemy*);
+bool battle(enemy*);
 string getTarget(enemy*);
 string getPlayerAction();
 void attack(enemy*);
@@ -116,8 +117,29 @@ void enemyTurn(enemy * enemies) {
   }
 }
 
-void battle(enemy * theEncounter) {
-
+bool battle(enemy * theEncounter) {
+  bool battleRages = true;
+  while (battleRages) {
+    displayBattle(theEncounter, theMage);
+    string action = getPlayerAction();
+    string target = "Mage";
+    if (action == "attack" || action == "mystic missile") {
+      target = getTarget(theEncounter);
+    }
+    actionHandler(action, target, theEncounter);
+    enemyTurn(theEncounter);
+    bool enemiesLive = false;
+    for (int i = 0;i < 3;i++) {
+      if (theEncounter[i].isAlive == true) {
+        enemiesLive = true; 
+      }
+    }
+    if (enemiesLive == false) {
+      return true;
+    } else if (theMage.isAlive == false) {
+      return false;
+    }
+  }
 }
 
 string getPlayerAction() {
@@ -157,6 +179,7 @@ void attack(enemy * attacker) {
   int dam = calculateDamage(attacker->strength);
   cout << attacker->name << " attacks The Mage, inflicting " << dam << " damage!\n";
   theMage.health -= (dam - theMage.defense);
+  if (theMage.health < 1) theMage.isAlive = false;
 }
 
 void enemyAction(string action, enemy * curEn) {
@@ -180,7 +203,8 @@ void actionHandler(string action, string target, enemy * enc) {
 void mageAttack (enemy * tar) {
   int damage = calculateDamage(theMage.strength);
   cout << "The mage strikes and inflicts " << damage << " damage!\n";
-  tar->health -= damage;
+  tar->health -= (damage-tar->defense);
+  if (tar->health < 1) tar->isAlive = false;
 }
 
 void displayBattle (enemy * encounter, Mage curMage) {
@@ -240,6 +264,9 @@ enemy* createEncounter(string firstType, string firstName, string secondType, st
 int main() {
   srand(time(NULL));
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblin", "goblinB", "goblin", "goblinC");
-  enemyTurn(encounter1);
-  displayBattle(encounter1, theMage);
+  if (battle(encounter1)) {
+    cout << "The mage is victorious!";
+  } else {
+    cout << "The mage has perished...";
+  }
 }
