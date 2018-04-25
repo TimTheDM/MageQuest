@@ -37,9 +37,11 @@ actionHandler then passes the necessary information, such as an enemy pointer, t
 
 --Create the enemyAction function, which is similar to actionHandler, but takes an enemy object, and only one string 'action'. This will be called for each
 enemy in an encounter when it is iterated through by a later function.
+
 --Create enemyTurn function, which only needs to accept an 'encounter' array. This function calls enemyAction for each object in encounter. The object supplies
 a pointer to itself, and supplies 'action' to enemyAction according to where the actionPoint to in enemy objects actionQue[aP]. The actionPointer of that 
 enemy is added to by 1, unless it was at 3, in which case it resets to 0. Only objects whose bool member isAlive = true are called
+
 --Create sample action, "Attack", which accepts an enemy object pointer, and then passes the int member of enemy object 'strength' to calculateDamage
 calculateDamage returns a number within range of strength, which is passed to an integer named damage. damage is subtracted from theMage objects health
 theMage checks to see if health is less than zero, but before then, attack has a side effect which displays this message, 
@@ -85,13 +87,27 @@ class enemy {
 //--------------------
 
 //-----Prototypes-----
-void mageAttack (enemy*);
-void actionHandler (string action, string target, enemy * enc);
-void displayBattle (enemy*, Mage);
+void attack(enemy*);
+void enemyAction(string, enemy*);
+void mageAttack(enemy*);
+void actionHandler(string action, string target, enemy * enc);
+void displayBattle(enemy*, Mage);
 string lowerCase(string);
 int calculateDamage(int);
 enemy* createEncounter(string, string, string, string, string, string);
 //--------------------
+
+void attack(enemy * attacker) {
+  int dam = calculateDamage(attacker->strength);
+  cout << attacker->name << " attacks The Mage, inflicting " << dam << " damage!\n";
+  theMage.health -= (dam - theMage.defense);
+}
+
+void enemyAction(string action, enemy * curEn) {
+  if (action == "attack") {
+    attack(curEn);
+  }
+}
 
 void actionHandler(string action, string target, enemy * enc) {
   enemy * targetEnemyPointer;
@@ -106,7 +122,9 @@ void actionHandler(string action, string target, enemy * enc) {
 }
 
 void mageAttack (enemy * tar) {
-  tar->health-=5;
+  int damage = calculateDamage(theMage.strength);
+  cout << "The mage strikes and inflicts " << damage << " damage!\n";
+  tar->health -= damage;
 }
 
 void displayBattle (enemy * encounter, Mage curMage) {
@@ -122,6 +140,7 @@ void displayBattle (enemy * encounter, Mage curMage) {
 }
 
 enemy::enemy (string type, string name) {
+  if (type == "") isAlive = false;
   if (type == "goblin") {
     this->health = 3;
     this->defense = 0;
@@ -165,6 +184,9 @@ enemy* createEncounter(string firstType, string firstName, string secondType, st
 int main() {
   srand(time(NULL));
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblin", "goblinB", "goblin", "goblinC");
+  displayBattle(encounter1, theMage);
   actionHandler("attack", "goblinA", encounter1);
+  displayBattle(encounter1, theMage);
+  enemyAction("attack", &encounter1[1]);
   displayBattle(encounter1, theMage);
 }
