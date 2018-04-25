@@ -92,6 +92,7 @@ class enemy {
 //--------------------
 
 //-----Prototypes-----
+string getTarget(enemy*);
 string getPlayerAction();
 void attack(enemy*);
 void enemyAction(string, enemy*);
@@ -115,6 +116,24 @@ string getPlayerAction() {
       }
     }
     cout << "Not a valid action\n";
+  }
+}
+
+string getTarget(enemy * anEncounter) {
+  string target;
+  while (true) {
+    getline(cin, target);
+    target = lowerCase(target);
+    for (int i = 0;i < 3;i++) {
+      if (target == lowerCase(anEncounter[i].name)) {
+        return anEncounter[i].name;
+      }
+    }
+    cout << "Not a valid target, these are the valid targets: ";
+    for (int i = 0;i < 3;i++) {
+      cout << anEncounter[i].name << ", ";
+    }
+    cout << "\n";
   }
 }
 
@@ -210,5 +229,5 @@ int main() {
   displayBattle(encounter1, theMage);
   enemyAction("attack", &encounter1[1]);
   displayBattle(encounter1, theMage);
-  cout << getPlayerAction();
+  cout << getTarget(encounter1);
 }
