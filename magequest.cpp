@@ -58,10 +58,44 @@ True, and then it checks theMage's isAlive member, and if it false, it returns f
 --Design enemy types and encounters as desired!
 */
 
+//-----Objects--------
+class Mage{
+  public:
+  int health = 20;
+  int defense = 0;
+  int strength = 5;
+  int magic = 30;
+} theMage;
+
+class enemy {
+  public:
+  int health;
+  int defense;
+  int strength;
+  int magic;
+  int aP;
+  string actionQue[4];
+  string type;
+  enemy (string);
+};
+//--------------------
+
 //-----Prototypes-----
 string lowerCase(string);
 int calculateDamage(int);
 //--------------------
+
+enemy::enemy (string type) {
+  if (type == "goblin") {
+    this->health = 3;
+    this->defense = 0;
+    this->strength = 3;
+    this-> aP = 0;
+    for (int i = 0;i < 4;i++) {
+      this->actionQue[i] = "attack";
+    }
+  }
+}
 
 string lowerCase (string theStr) {
   std::locale loc;
@@ -83,4 +117,5 @@ int calculateDamage (int damage) {
 
 int main() {
   srand(time(NULL));
+  
 }
