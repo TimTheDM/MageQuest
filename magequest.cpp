@@ -82,7 +82,7 @@ class enemy {
   int defense;
   int strength;
   int magic;
-  int aP;
+  int aP = 0;
   bool isAlive = true;
   string actionQue[4];
   string type;
@@ -92,6 +92,8 @@ class enemy {
 //--------------------
 
 //-----Prototypes-----
+void enemyTurn(enemy*);
+void battle(enemy*);
 string getTarget(enemy*);
 string getPlayerAction();
 void attack(enemy*);
@@ -103,6 +105,20 @@ string lowerCase(string);
 int calculateDamage(int);
 enemy* createEncounter(string, string, string, string, string, string);
 //--------------------
+
+void enemyTurn(enemy * enemies) {
+  for (int i = 0;i < 3;i++) {
+    if (enemies[i].isAlive) {
+      if (enemies[i].aP > 4) enemies[i].aP = 0;
+      enemyAction(enemies[i].actionQue[enemies[i].aP], &enemies[i]);
+      enemies[i].aP += 1;
+    }
+  }
+}
+
+void battle(enemy * theEncounter) {
+
+}
 
 string getPlayerAction() {
   string validActions[] = {"attack", "quaff", "mystic missile", "heal", "defense up", "fireball"};
@@ -224,10 +240,6 @@ enemy* createEncounter(string firstType, string firstName, string secondType, st
 int main() {
   srand(time(NULL));
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblin", "goblinB", "goblin", "goblinC");
+  enemyTurn(encounter1);
   displayBattle(encounter1, theMage);
-  actionHandler("attack", "goblinA", encounter1);
-  displayBattle(encounter1, theMage);
-  enemyAction("attack", &encounter1[1]);
-  displayBattle(encounter1, theMage);
-  cout << getTarget(encounter1);
 }
