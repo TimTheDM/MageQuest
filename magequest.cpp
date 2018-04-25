@@ -76,21 +76,25 @@ class enemy {
   int aP;
   string actionQue[4];
   string type;
-  enemy (string);
+  string name;
+  enemy (string, string);
 };
 //--------------------
 
 //-----Prototypes-----
 string lowerCase(string);
 int calculateDamage(int);
+enemy* createEncounter(string, string, string, string, string, string);
 //--------------------
 
-enemy::enemy (string type) {
+enemy::enemy (string type, string name) {
   if (type == "goblin") {
     this->health = 3;
     this->defense = 0;
     this->strength = 3;
-    this-> aP = 0;
+    this->aP = 0;
+    this->type = "goblin";
+    this->name = name;
     for (int i = 0;i < 4;i++) {
       this->actionQue[i] = "attack";
     }
@@ -115,7 +119,19 @@ int calculateDamage (int damage) {
   else if (rando > 7 && rando < 10) return damage +2;
 }
 
+enemy* createEncounter(string firstType, string firstName, string secondType, string secondName, string thirdType, string thirdName) {
+  static enemy encounter[] = {
+    enemy(firstType, firstName),
+    enemy(secondType, secondName),
+    enemy(thirdType, thirdName)
+  };
+  return encounter;
+}
+
 int main() {
   srand(time(NULL));
+  enemy test("goblin", "gobbo");
+  enemy * encounter1 = createEncounter("goblin", "goblinA", "goblin", "goblinB", "goblin", "goblinC");
+  cout << encounter1[0].health << "\n";
   
 }
