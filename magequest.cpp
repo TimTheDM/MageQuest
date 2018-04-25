@@ -46,20 +46,25 @@ enemy is added to by 1, unless it was at 3, in which case it resets to 0. Only o
 calculateDamage returns a number within range of strength, which is passed to an integer named damage. damage is subtracted from theMage objects health
 theMage checks to see if health is less than zero, but before then, attack has a side effect which displays this message, 
 "enemyName attacks the Mage, dealing damage damage!"
+
 --Create sample player action function, mageAttack, which accepts encounter array, and target from actionHandler. It passes the Mage objects 'strength' int member
 as an argument to calculateDamage, and then subtracts the return value of that function from an enemy in the encounter array whose name string member matches the 
 target string.
+
 --Create function called getPlayerAction, which accepts no arguments, and asks the player for an action string. It will loop until given a valid action, which it 
 then returns
+
 --Create function called getTarget, which takes an encounter as an argument, and prompts the player to supply a string that matches a name from any of the objects
 in the encounter array. It will keep asking for a target until it is given one that matches a name from encounter. It will give a list of valid targets every time
 it is not supplied a valid target
+
 --Create function called battle, which takes an encounter as an argument. It first uses display to display the current battle, then it creates two strings, action,
 and target, which it fills by calling getPlayerAction, and getTarget. These strings and the encounter are passed as argument to actionHandler, which calls the
 proper action. getTarget is skipped depending on action called, in which case, "mage" is passed to actionHandlers target param. Battle then calls enemyTurn
 with its encounter param. Once this is done, it iterates through the encounter, checking each enemy objects isAlive, if all of them equal false, battle returns 
 True, and then it checks theMage's isAlive member, and if it false, it returns false. Otherwise, it loops back to display.
---Design enemy types and encounters as desired!
+
+--Design spells and enemy types
 */
 
 //-----Objects--------
@@ -87,6 +92,7 @@ class enemy {
 //--------------------
 
 //-----Prototypes-----
+string getPlayerAction();
 void attack(enemy*);
 void enemyAction(string, enemy*);
 void mageAttack(enemy*);
@@ -96,6 +102,21 @@ string lowerCase(string);
 int calculateDamage(int);
 enemy* createEncounter(string, string, string, string, string, string);
 //--------------------
+
+string getPlayerAction() {
+  string validActions[] = {"attack", "quaff", "mystic missile", "heal", "defense up", "fireball"};
+  string action;
+  while (true) {
+    getline(cin, action);
+    action = lowerCase(action);
+    for (int i = 0;i < 6;i++) {
+      if (action == validActions[i]) {
+        return action;
+      }
+    }
+    cout << "Not a valid action\n";
+  }
+}
 
 void attack(enemy * attacker) {
   int dam = calculateDamage(attacker->strength);
@@ -189,4 +210,5 @@ int main() {
   displayBattle(encounter1, theMage);
   enemyAction("attack", &encounter1[1]);
   displayBattle(encounter1, theMage);
+  cout << getPlayerAction();
 }
