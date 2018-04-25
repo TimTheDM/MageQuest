@@ -30,9 +30,11 @@ be string firstType, string firstName, string secondType... etc.
 --Create the display function, which accepts a Mage object, and an encounter object, and then displays relevant information to the player
 --The relevant information being displayed are enemy objects whose bool isAlive is set to true, and their 'Health Points' int, and their 'name' string members
 Make it look a little nice too, with like, -------------, and stuff. (give em the Ritz)
+
 --Create the actionHandler function, which accepts a two strings, an 'action', which is an indentifier for the players valid actions, and a target
 actionHandler also takes in the encounter. It iterates through the encounter array until it finds an enemy object whose name member matches the string 'target'
 actionHandler then passes the necessary information, such as an enemy pointer, to the function according to 'action' string.
+
 --Create the enemyAction function, which is similar to actionHandler, but takes an enemy object, and only one string 'action'. This will be called for each
 enemy in an encounter when it is iterated through by a later function.
 --Create enemyTurn function, which only needs to accept an 'encounter' array. This function calls enemyAction for each object in encounter. The object supplies
@@ -83,11 +85,29 @@ class enemy {
 //--------------------
 
 //-----Prototypes-----
+void mageAttack (enemy*);
+void actionHandler (string action, string target, enemy * enc);
 void displayBattle (enemy*, Mage);
 string lowerCase(string);
 int calculateDamage(int);
 enemy* createEncounter(string, string, string, string, string, string);
 //--------------------
+
+void actionHandler(string action, string target, enemy * enc) {
+  enemy * targetEnemyPointer;
+  for (int i = 0;i < 3;i++) {
+    if (enc[i].name == target) {
+      targetEnemyPointer = &enc[i];
+    }
+  }
+  if (action == "attack") {
+    mageAttack(targetEnemyPointer);
+  }
+}
+
+void mageAttack (enemy * tar) {
+  tar->health-=5;
+}
 
 void displayBattle (enemy * encounter, Mage curMage) {
   cout << "-------------Enemies-------------\n";
@@ -144,8 +164,7 @@ enemy* createEncounter(string firstType, string firstName, string secondType, st
 
 int main() {
   srand(time(NULL));
-  enemy test("goblin", "gobbo");
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblin", "goblinB", "goblin", "goblinC");
-  cout << encounter1[0].health << "\n";
+  actionHandler("attack", "goblinA", encounter1);
   displayBattle(encounter1, theMage);
 }
