@@ -85,7 +85,7 @@ class enemy {
   int magic;
   int aP = 0;
   bool isAlive = true;
-  string actionQue[4];
+  string actionQue[3];
   string type;
   string name;
   enemy (string, string);
@@ -176,7 +176,7 @@ void mysticMissile(enemy * target) {
 void enemyTurn(enemy * enemies) {
   for (int i = 0;i < 3;i++) {
     if (enemies[i].isAlive) {
-      if (enemies[i].aP > 4) enemies[i].aP = 0;
+      if (enemies[i].aP > 3) enemies[i].aP = 0;
       enemyAction(enemies[i].actionQue[enemies[i].aP], &enemies[i]);
       enemies[i].aP += 1;
     }
@@ -246,9 +246,10 @@ string getTarget(enemy * anEncounter) {
 }
 
 void attack(enemy * attacker) {
-  int dam = calculateDamage(attacker->strength);
+  int dam = calculateDamage(attacker->strength)-theMage.defense;
+  if (dam < 0) dam = 0;
   cout << attacker->name << " attacks The Mage, inflicting " << dam << " damage!\n";
-  theMage.health -= (dam - theMage.defense);
+  theMage.health -= dam;
   if (theMage.health < 1) theMage.isAlive = false;
 }
 
