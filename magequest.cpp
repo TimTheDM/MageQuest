@@ -105,7 +105,49 @@ void displayBattle(enemy*, Mage);
 string lowerCase(string);
 int calculateDamage(int);
 enemy* createEncounter(string, string, string, string, string, string);
+void mysticMissile(enemy*);
+void heal();
+void defenseUp();
+void fireball(enemy*);
+void quaff();
 //--------------------
+
+void fireball(enemy * victims) {
+  cout << "With a sizzle, and a streak, a ball of fire flies from the Mage's hands, blowing up on every enemy\n";
+  for (int i = 0;i < 3;i++) {
+    if (victims[i].isAlive) {
+      int dam = calculateDamage(5);
+      cout << victims[i].name << " is engulfed in flames, taking " << dam << " damage!\n";
+      victims[i].health -= dam;
+      if (victims[i].health < 1) victims[i].isAlive = false;
+    }
+  }
+  theMage.magic -= 6;
+}
+
+void defenseUp() {
+  theMage.defense += 1;
+  cout << "The air surrounding the Mage distorts, defense raised!\n";
+  theMage.magic -= 1;
+}
+
+void heal() {
+  int damageRestored = calculateDamage(7);
+  theMage.health += damageRestored;
+  if (theMage.health > 20) {
+    theMage.health = 20;
+  }
+  cout << "A green light surrounds the Mage, restoring " << damageRestored << " health points!\n";
+  theMage.magic -= 1;
+}
+
+void mysticMissile(enemy * target) {
+  int damage = calculateDamage(9);
+  cout << "A light emanates from the Mage's hands, striking " << target->name << ", and inflicting, "  << damage << " damage!\n";
+  target->health -= damage;
+  theMage.magic -= 2;
+  if (target->health < 1) target->isAlive = false;
+}
 
 void enemyTurn(enemy * enemies) {
   for (int i = 0;i < 3;i++) {
@@ -201,12 +243,22 @@ void actionHandler(string action, string target, enemy * enc) {
   }
   if (action == "attack") {
     mageAttack(targetEnemyPointer);
+  } else if (action == "heal") {
+    heal();
+  } else if (action == "mystic missile") {
+    mysticMissile(targetEnemyPointer);
+  } else if (action == "defense up") {
+    defenseUp();
+  } else if (action == "fireball") {
+    fireball(enc);
+  } else if (action == "quaff") {
+    //fill in latersees
   }
 }
 
 void mageAttack (enemy * tar) {
   int damage = calculateDamage(theMage.strength);
-  cout << "The mage strikes " << tar->name << " inflicting, "  << damage << " damage!\n";
+  cout << "The mage strikes " << tar->name << ", inflicting "  << damage << " damage!\n";
   tar->health -= (damage-tar->defense);
   if (tar->health < 1) tar->isAlive = false;
 }
@@ -219,7 +271,7 @@ void displayBattle (enemy * encounter, Mage curMage) {
     }
   }
   cout << "-------------The Mage------------\n";
-  cout << "HP:" << curMage.health << "/20 MP:" << curMage.magic << "\n";
+  cout << "HP:" << curMage.health << "/20 MP:" << curMage.magic << "/30\n";
   cout << "Actions: Attack | Quaff\n" << "Spells: Mystic missile | Heal | Defense Up | Fireball\n";
 }
 
