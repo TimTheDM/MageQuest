@@ -138,12 +138,15 @@ string artifactChoice() {
       if (choice == "light sword") {
         theMage.strength += 2;
         cout << "\"Excellent choice, may your enemies fall to your ATTACKS\", says the attendant\n";
+        return choice;
       } else if (choice == "wind cloak") {
         theMage.hasCloak = true;
         cout << "\"Excellent choice, may your enemies not find you an easy target to pinpoint\", says the attendant\n";
+        return choice;
       } else if (choice == "mana potion") {
         theMage.hasPotion = true;
         cout << "\"Excellent choice, may your wellspring of magic never run dry\", says the attendant\n";
+        return choice;
       }
     } else {
       cout << "That is not one of the artifacts, choose an artifact: ";
@@ -527,13 +530,14 @@ enemy* createEncounter5(string firstType, string firstName, string secondType, s
 
 int main() {
   srand(time(NULL));
-  artifactChoice();
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblinRager", "Goblin Berserker", "goblin", "goblinC");
   enemy * encounter2 = createEncounter2("goblin", "goblin", "weakGolem", "Weak GolemA", "weakGolem", "Weak GolemB");
   enemy * encounter3 = createEncounter3("beatrice", "Beatrice", "", "", "", "");
-  if (battle(encounter3)) {
-    cout << "The mage is victorious!";
-  } else {
-    cout << "The mage has perished...";
-  }
+  cout << "The dark wizard Gerran has been terrorizing the countryside, and threatened to burn the puppy orphanage.\n";
+  cout << "The king, in an attempt to save the puppies, has invited you, his court magician to his halls. The kings face\n";
+  cout << "floods with relief as you enter.\n";
+  cout << "\n\"Ah! My court wizard, excellent. I need you to stop this nefarious warlock, Gerran. I shall allow you\n";
+  cout << "one mystic artifact from my treasury, for you to keep. May the gods smile on your journey, good Mage.\"\n";
+  cout << "The king ushers his attendant to lead you to the treasury.\n";
+  artifactChoice();
 }
