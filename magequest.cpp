@@ -160,14 +160,14 @@ void nani() {
 
 bool windCloakCheck() {
   int check = (rand() % 10) + 1;
-  if (check = 10 && theMage.hasCloak) {
-    return false;
-  } else return true;
+  if (check == 10 && (theMage.hasCloak == true)) {
+    return true;
+  } else return false;
 }
 
 void hellFire(enemy*caster) {
   int dam = calculateDamage(8);
-  if (windCloakCheck()) {
+  if (!windCloakCheck()) {
     if (caster->name == "Beatrice") {
       if(caster->magic < 3) {
         cout << "Beatrice cackles, and raises her palms, a puff of steam harmlessly streaming from her hands.\n";
@@ -540,12 +540,34 @@ int main() {
   cout << "one mystic artifact from my treasury, for you to keep. May the gods smile on your journey, good Mage.\"\n";
   cout << "The king ushers his attendant to lead you to the treasury.\n";
   artifactChoice();
+  cout << "----------------------------------------\n";
   cout << "Along the road on your journey, a pack of goblins assault you, the leader of the pack grins gleefully\n";
-  cout << "\"Gerran sends his regards, Mage! Now die!\" it says as it charges you.";
-  if (encounter1) {
-    "The Mage has defeated his opponents, the goblins!\n";
+  cout << "\"Gerran sends his regards, Mage! Now die!\" it says as it charges you.\n";
+  if (battle(encounter1)) {
+    cout << "The Mage has defeated his opponents, the goblins!\n";
   } else {
-    "The Mage has perished!... as well as the puppies.";
+    cout << "The Mage has perished!... as well as the puppies.";
   }
-  
+  cout << "As the Mage approaches Gerran's tower, he is confronted with a rickety bridge, guarded by Gerrans servants\n";
+  cout << "The Mage prepares for battle\n";
+  if (battle(encounter2)) {
+    cout << "The Mage defeats Gerran's guards, and proceeds across the bridge\n";
+  } else {
+    cout << "The Mage has perished, in sight of Gerrans wicked tower!";
+  }
+  cout << "-----------------------------------------\n";
+  cout << "\nAcross the bridge, standing in front of Gerran tower, a demoness glowers at you\n";
+  cout << "She smirks, \"No more games, Mage. I'm going to deliver your charred corpse to Gerran\"\n";
+  cout << "She levels her palms, \"See you in hell!\"\n";
+  if (battle(encounter3)) {
+    cout << "Gerran defeats Beatrice, now all that stands in the way of the puppy orphanages safety, is Gerran\n";
+    cout << "himself, the Mage looks up towards his tower..\n";
+    int a = 3;
+    cout << "To Be Continued";
+    cin >> a;
+  } else {
+    cout << "The Mage perishes in Beatrice's hellfire.\n";
+    int a;
+    cin >> a;
+  }
 }
