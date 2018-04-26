@@ -540,4 +540,12 @@ int main() {
   cout << "one mystic artifact from my treasury, for you to keep. May the gods smile on your journey, good Mage.\"\n";
   cout << "The king ushers his attendant to lead you to the treasury.\n";
   artifactChoice();
+  cout << "Along the road on your journey, a pack of goblins assault you, the leader of the pack grins gleefully\n";
+  cout << "\"Gerran sends his regards, Mage! Now die!\" it says as it charges you.";
+  if (encounter1) {
+    "The Mage has defeated his opponents, the goblins!\n";
+  } else {
+    "The Mage has perished!... as well as the puppies.";
+  }
+  
 }
