@@ -110,7 +110,31 @@ void heal();
 void defenseUp();
 void fireball(enemy*);
 void quaff();
+bool mpCheck(string);
+void notEnoughMagic(string);
 //--------------------
+
+bool mpCheck(string spell) {
+  if (spell == "fireball") {
+    if (theMage.magic < 6) {
+      return false;
+    } else return true;
+  }
+  if (spell == "mystic missile") {
+    if (theMage.magic < 2) {
+      return false;
+    } else return true;
+  }
+  if (spell == "heal" || spell == "defense up") {
+    if (theMage.magic < 1) {
+      return false;
+    } else return true;
+  }
+}
+
+void notEnoughMagic(string spell) {
+  cout << "The Mage raises his hands to cast " << spell << ", but only a puff of smoke appears\n";
+}
 
 void fireball(enemy * victims) {
   cout << "With a sizzle, and a streak, a ball of fire flies from the Mage's hands, blowing up on every enemy\n";
@@ -244,13 +268,21 @@ void actionHandler(string action, string target, enemy * enc) {
   if (action == "attack") {
     mageAttack(targetEnemyPointer);
   } else if (action == "heal") {
-    heal();
+    if (mpCheck(action)) {
+      heal();
+    } else notEnoughMagic(action); 
   } else if (action == "mystic missile") {
-    mysticMissile(targetEnemyPointer);
+    if (mpCheck(action)) {
+      mysticMissile(targetEnemyPointer);
+    } else notEnoughMagic(action);
   } else if (action == "defense up") {
-    defenseUp();
+    if (mpCheck(action)) {
+      defenseUp();
+    } else notEnoughMagic(action);  
   } else if (action == "fireball") {
-    fireball(enc);
+    if (mpCheck(action)) {
+      fireball(enc);
+    } else notEnoughMagic(action);
   } else if (action == "quaff") {
     //fill in latersees
   }
