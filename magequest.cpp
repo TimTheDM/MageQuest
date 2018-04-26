@@ -125,6 +125,7 @@ void hellFire(enemy*);
 void nani();
 void enemyHeal(enemy*);
 void doom(enemy*);
+void healBetween();
 //--------------------
 
 void enemyHeal(enemy * healer) {
@@ -592,17 +593,21 @@ enemy* createEncounter5(string firstType, string firstName, string secondType, s
   };
   return encounter;
 }
+
+void healBetween() {
+  cout << "Would you like to cast Heal/Quaff before your next fight? No for continue, and heal/quaff respectively";
+  string action;
+  while (action != "no" || action == "n") {
+    getline(cin, action);
+    action = lowerCase(action);
+    if (action == "heal") heal();
+    if (action == "quaff") quaff();
+  }
+}
 //THANKS
 
-int main() {
-  int a;
-  srand(time(NULL));
-  enemy * encounter1 = createEncounter("goblin", "goblinA", "goblinRager", "Goblin Berserker", "goblin", "goblinC");
-  enemy * encounter2 = createEncounter2("goblin", "goblin", "weakGolem", "Weak GolemA", "weakGolem", "Weak GolemB");
-  enemy * encounter3 = createEncounter3("beatrice", "Beatrice", "", "", "", "");
-  enemy * encounter4 = createEncounter4("doomSeer", "Doom Seer", "goblinElite", "Goblin Elite", "strongGolem", "Strong Golem");
-  battle(encounter4);
-  /*cout << "The dark wizard Gerran has been terrorizing the countryside, and threatened to burn the puppy orphanage.\n";
+bool partOne(enemy * enc) {
+  cout << "The dark wizard Gerran has been terrorizing the countryside, and threatened to burn the puppy orphanage.\n";
   cout << "The king, in an attempt to save the puppies, has invited you, his court magician to his halls. The kings face\n";
   cout << "floods with relief as you enter.\n";
   cout << "\n\"Ah! My court wizard, excellent. I need you to stop this nefarious warlock, Gerran. I shall allow you\n";
@@ -612,35 +617,70 @@ int main() {
   cout << "----------------------------------------\n";
   cout << "Along the road on your journey, a pack of goblins assault you, the leader of the pack grins gleefully\n";
   cout << "\"Gerran sends his regards, Mage! Now die!\" it says as it charges you.\n";
-  if (battle(encounter1)) {
+  return battle(enc);
+}
+
+bool partTwo(enemy * enc) {
+  theMage.defense = 0;
+  cout << "As the Mage approaches Gerran's tower, he is confronted with a rickety bridge, guarded by Gerrans servants\n";
+  cout << "The Mage prepares for battle\n";
+  return battle(enc);
+}
+
+bool partThree(enemy * enc) {
+  theMage.defense = 0;
+  cout << "\nAcross the bridge, standing in front of Gerran tower, a demoness glowers at you\n";
+  cout << "She smirks, \"No more games, Mage. I'm going to deliver your charred corpse to Gerran\"\n";
+  cout << "She levels her palms, \"See you in hell!\"\n";
+  return battle(enc);
+}
+
+bool partFour(enemy * enc) {
+  theMage.defense = 0;
+  cout << "As the Mage pushes into the tower, a voice greets him, \"So you have managed to defeat my apprentice, impressive.\n";
+  cout << "I suspect you wont fare so well against my greatest servants however.. so this is our goodbye. I'll be sure to\n";
+  cout << "feed your remains to your precious puppies before I crush them! Mwahahahahahahaha!\"\n\n";
+  cout << "The Mage soon finds himself face to face against Gerrans elite monsters..\n";
+  return battle(enc);
+}
+
+int main() {
+  int a;
+  srand(time(NULL));
+  enemy * encounter1 = createEncounter("goblin", "goblinA", "goblinRager", "Goblin Berserker", "goblin", "goblinC");
+  enemy * encounter2 = createEncounter2("goblin", "goblin", "weakGolem", "Weak GolemA", "weakGolem", "Weak GolemB");
+  enemy * encounter3 = createEncounter3("beatrice", "Beatrice", "", "", "", "");
+  enemy * encounter4 = createEncounter4("doomSeer", "Doom Seer", "goblinElite", "Goblin Elite", "strongGolem", "Strong Golem");
+  if (partOne(encounter1)) {
     cout << "The Mage has defeated his opponents, the goblins!\n";
   } else {
     cout << "The Mage has perished!... as well as the puppies.";
     cin >> a;
     return 0;
   }
-  cout << "As the Mage approaches Gerran's tower, he is confronted with a rickety bridge, guarded by Gerrans servants\n";
-  cout << "The Mage prepares for battle\n";
-  if (battle(encounter2)) {
+  healBetween();
+  if (partTwo(encounter2)) {
     cout << "The Mage defeats Gerran's guards, and proceeds across the bridge\n";
   } else {
     cout << "The Mage has perished, in sight of Gerrans wicked tower!";
     cin >> a;
-    return 2;
+    return 0;
   }
   cout << "-----------------------------------------\n";
-  cout << "\nAcross the bridge, standing in front of Gerran tower, a demoness glowers at you\n";
-  cout << "She smirks, \"No more games, Mage. I'm going to deliver your charred corpse to Gerran\"\n";
-  cout << "She levels her palms, \"See you in hell!\"\n";
-  if (battle(encounter3)) {
-    cout << "Gerran defeats Beatrice, now all that stands in the way of the puppy orphanages safety, is Gerran\n";
-    cout << "himself, the Mage looks up towards his tower..\n";
-    int a = 3;
-    cout << "To Be Continued";
-    cin >> a;
+  healBetween();
+  if (partThree(encounter3)) {
+    cout << "After successfully defeating Beatrice, the Mage takes a moment to steel himself, before entering Gerran's tower\n";
   } else {
     cout << "The Mage perishes in Beatrice's hellfire.\n";
     int a;
     cin >> a;
-  } */
+  }
+  healBetween();
+  if(partFour(encounter4)) {
+    cout << "With Gerran's elite servants dispatched, the Mage prepares himself for his confrontation with Gerran\n";
+  } else {
+    cout << "The Mage at least made good puppy chow, before the puppies were incinerated...";
+    return 0;
+  }
+  healBetween();
 }
