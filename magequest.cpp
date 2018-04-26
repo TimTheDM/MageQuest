@@ -2,7 +2,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <locale>
-
+#include <vector>
 using namespace std;
 
 /*
@@ -89,6 +89,7 @@ class enemy {
   string type;
   string name;
   enemy (string, string);
+  enemy () {};
 };
 //--------------------
 
@@ -205,6 +206,7 @@ bool battle(enemy * theEncounter) {
       }
     }
     if (enemiesLive == false) {
+      delete theEncounter;
       return true;
     } else if (theMage.isAlive == false) {
       return false;
@@ -320,6 +322,13 @@ enemy::enemy (string type, string name) {
     for (int i = 0;i < 4;i++) {
       this->actionQue[i] = "attack";
     }
+  } else if (type == "weakGolem") {
+    this->health = 15;
+    this->defense = 1;
+    this->strength = 1;
+    this->aP = 0;
+    this->type = "weakGolem";
+    this->name = name;
   }
 }
 
@@ -340,9 +349,9 @@ int calculateDamage (int damage) {
   else if (rando > 5 && rando < 8) return damage + 1;
   else if (rando > 7 && rando < 10) return damage +2;
 }
-
+//IGNORE INCREDIBLE INELEGANT SOLUTION TO MEMORY PROBLEM
 enemy* createEncounter(string firstType, string firstName, string secondType, string secondName, string thirdType, string thirdName) {
-  static enemy encounter[] = {
+  static enemy encounter[3] = {
     enemy(firstType, firstName),
     enemy(secondType, secondName),
     enemy(thirdType, thirdName)
@@ -350,10 +359,49 @@ enemy* createEncounter(string firstType, string firstName, string secondType, st
   return encounter;
 }
 
+enemy* createEncounter2(string firstType, string firstName, string secondType, string secondName, string thirdType, string thirdName) {
+  static enemy encounter[3] = {
+    enemy(firstType, firstName),
+    enemy(secondType, secondName),
+    enemy(thirdType, thirdName)
+  };
+  return encounter;
+}
+
+enemy* createEncounter3(string firstType, string firstName, string secondType, string secondName, string thirdType, string thirdName) {
+  static enemy encounter[3] = {
+    enemy(firstType, firstName),
+    enemy(secondType, secondName),
+    enemy(thirdType, thirdName)
+  };
+  return encounter;
+}
+
+enemy* createEncounter4(string firstType, string firstName, string secondType, string secondName, string thirdType, string thirdName) {
+  static enemy encounter[3] = {
+    enemy(firstType, firstName),
+    enemy(secondType, secondName),
+    enemy(thirdType, thirdName)
+  };
+  return encounter;
+}
+
+enemy* createEncounter5(string firstType, string firstName, string secondType, string secondName, string thirdType, string thirdName) {
+  static enemy encounter[3] = {
+    enemy(firstType, firstName),
+    enemy(secondType, secondName),
+    enemy(thirdType, thirdName)
+  };
+  return encounter;
+}
+
+//THANKS
+
 int main() {
   srand(time(NULL));
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblin", "goblinB", "goblin", "goblinC");
-  if (battle(encounter1)) {
+  enemy * encounter2 = createEncounter2("goblin", "goblinA", "weakGolem", "Weak Golem", "goblin", "goblinB");
+  if (battle(encounter2)) {
     cout << "The mage is victorious!";
   } else {
     cout << "The mage has perished...";
