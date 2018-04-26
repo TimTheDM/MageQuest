@@ -5,6 +5,7 @@
 #include <vector>
 using namespace std;
 
+
 /*
 =========================
 Design
@@ -87,7 +88,7 @@ class enemy {
   int magic;
   int aP = 0;
   bool isAlive = true;
-  string actionQue[3];
+  string actionQue[4];
   string type;
   string name;
   enemy (string, string);
@@ -122,7 +123,36 @@ bool windCloakCheck();
 void quaff();
 void hellFire(enemy*);
 void nani();
+void enemyHeal(enemy*);
+void doom(enemy*);
 //--------------------
+
+void enemyHeal(enemy * healer) {
+  int heal = calculateDamage(6);
+  if (healer->type == "goblinElite") {
+    cout << healer->name << " quaffs a potion, restoring " << heal << " HP\n";
+    healer->health += heal;
+    if (healer->health > 15) healer->health = 15;
+  } else {
+    cout << "The dark wizard surrounds himself in a pale light, restoring " << heal << " HP\n";
+    healer->health += heal;
+    if (healer->health > 30) healer->health = 30;
+  }
+}
+
+void doom(enemy*doomer) {
+  if (doomer->aP == 0) {
+    cout << "The " << doomer->name << "'s eyes roll back into her head\n";
+  } else if (doomer->aP == 1){
+    cout << "The Doom Seer's mutterings begin to grow louder, and more hoarse\n";
+  } else if (doomer->aP == 2) {
+    cout << "The Doom Seer cackles, \"Soon.. master..\" she croaks\n";
+  } else if (doomer->aP == 3) {
+    cout << "The Doom Seer points her hagged old finger, indicating something behind the Mage. As he looks, he sees\n";
+    cout << "the face of the death himself, and in the next moment, he's whisked from his mortal coil\n";
+    theMage.isAlive = false;
+  }
+}
 
 string artifactChoice() {
   cout << "You are ushered into the treasury. Your attendant bids their head, and asks you to take one artifact from the treasury\n";
@@ -131,8 +161,8 @@ string artifactChoice() {
   cout << "\n The mana potion- A powerful potion that can restore your mana in a pinch\n";
   cout << "\n Which shall you take?: ";
   string choice;
-  getline(cin, choice);
   while (true) {
+    getline(cin, choice);
     choice = lowerCase(choice);
     if (choice == "light sword" || choice == "wind cloak" || choice == "mana potion") {
       if (choice == "light sword") {
@@ -362,6 +392,10 @@ void enemyAction(string action, enemy * curEn) {
     nani();
   } else if (action == "hellfire") {
     hellFire(curEn);
+  } else if (action == "doom") {
+    doom(curEn);
+  } else if (action == "enemyHeal") {
+    enemyHeal(curEn);
   }
 }
 
@@ -391,7 +425,7 @@ void actionHandler(string action, string target, enemy * enc) {
       fireball(enc);
     } else notEnoughMagic(action);
   } else if (action == "quaff") {
-    //fill in latersees
+    quaff();
   }
 }
 
@@ -461,6 +495,38 @@ enemy::enemy (string type, string name) {
       this->actionQue[i] = "hellfire";
     }
     this->actionQue[3] = "nani?!";
+  } else if (type == "doomSeer") {
+    this->health = 15;
+    this->defense = 0;
+    this->strength = 0;
+    this->aP = 0;
+    this->type = "doomSeer";
+    this->name = name;
+    for (int i = 0;i < 4;i++) {
+      this->actionQue[i] = "doom";
+    }
+  } else if (type == "goblinElite") {
+    this->health = 15;
+    this->defense = 1;
+    this->strength = 4;
+    this->aP = 0;
+    this->type = type;
+    this->actionQue[0] = "attack";
+    this->actionQue[1] = "enemyHeal";
+    this->actionQue[2] = "rage";
+    this->actionQue[3] = "attack";
+    this->name = name;
+  } else if (type == "strongGolem") {
+    this->health = 25;
+    this->defense = 3;
+    this->strength = 5;
+    this->aP = 0;
+    this->type = "strongGolem";
+    this->actionQue[0] = "golemGrumble";
+    this->actionQue[1] = "attack";
+    this->actionQue[2] = "golemGrumble";
+    this->actionQue[3] = "attack";
+    this->name = name;
   }
 }
 
@@ -529,11 +595,14 @@ enemy* createEncounter5(string firstType, string firstName, string secondType, s
 //THANKS
 
 int main() {
+  int a;
   srand(time(NULL));
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblinRager", "Goblin Berserker", "goblin", "goblinC");
   enemy * encounter2 = createEncounter2("goblin", "goblin", "weakGolem", "Weak GolemA", "weakGolem", "Weak GolemB");
   enemy * encounter3 = createEncounter3("beatrice", "Beatrice", "", "", "", "");
-  cout << "The dark wizard Gerran has been terrorizing the countryside, and threatened to burn the puppy orphanage.\n";
+  enemy * encounter4 = createEncounter4("doomSeer", "Doom Seer", "goblinElite", "Goblin Elite", "strongGolem", "Strong Golem");
+  battle(encounter4);
+  /*cout << "The dark wizard Gerran has been terrorizing the countryside, and threatened to burn the puppy orphanage.\n";
   cout << "The king, in an attempt to save the puppies, has invited you, his court magician to his halls. The kings face\n";
   cout << "floods with relief as you enter.\n";
   cout << "\n\"Ah! My court wizard, excellent. I need you to stop this nefarious warlock, Gerran. I shall allow you\n";
@@ -547,6 +616,8 @@ int main() {
     cout << "The Mage has defeated his opponents, the goblins!\n";
   } else {
     cout << "The Mage has perished!... as well as the puppies.";
+    cin >> a;
+    return 0;
   }
   cout << "As the Mage approaches Gerran's tower, he is confronted with a rickety bridge, guarded by Gerrans servants\n";
   cout << "The Mage prepares for battle\n";
@@ -554,6 +625,8 @@ int main() {
     cout << "The Mage defeats Gerran's guards, and proceeds across the bridge\n";
   } else {
     cout << "The Mage has perished, in sight of Gerrans wicked tower!";
+    cin >> a;
+    return 2;
   }
   cout << "-----------------------------------------\n";
   cout << "\nAcross the bridge, standing in front of Gerran tower, a demoness glowers at you\n";
@@ -569,5 +642,5 @@ int main() {
     cout << "The Mage perishes in Beatrice's hellfire.\n";
     int a;
     cin >> a;
-  }
+  } */
 }
