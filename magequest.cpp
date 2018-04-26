@@ -75,6 +75,8 @@ class Mage{
   int strength = 5;
   int magic = 30;
   bool isAlive = true;
+  bool hasPotion = false;
+  bool hasCloak = false;
 } theMage;
 
 class enemy {
@@ -115,7 +117,28 @@ bool mpCheck(string);
 void notEnoughMagic(string);
 void golemGrumble(enemy*);
 void rage(enemy*);
+string artifactChoice();
+bool windCloakCheck();
+void quaff();
+void hellFire(enemy*);
 //--------------------
+
+bool windCloakCheck() {
+  int check = (rand() % 10) + 1;
+  if (check = 10) {
+    return true;
+  } else return false;
+}
+
+void quaff() {
+  if (theMage.hasPotion) {
+    cout << "The Mage quaffs the mana potion, rejuvenating his mana supply\n";
+    theMage.magic += 10;
+    if (theMage.magic > 30) theMage.magic = 30;
+  } else {
+    cout << "The Mage reaches for a potion, only to realize he has none!\n";
+  }
+}
 
 void rage(enemy * enraged) {
   cout << enraged->name << " flies into a rage!\n";
@@ -261,8 +284,12 @@ string getTarget(enemy * anEncounter) {
 void attack(enemy * attacker) {
   int dam = calculateDamage(attacker->strength)-theMage.defense;
   if (dam < 0) dam = 0;
-  cout << attacker->name << " attacks The Mage, inflicting " << dam << " damage!\n";
-  theMage.health -= dam;
+  if (windCloakCheck) {
+    cout << "As " << attacker->name << " moves to attack, the Mage nimbly sidesteps out of the way\n";
+  } else {
+    cout << attacker->name << " attacks The Mage, inflicting " << dam << " damage!\n";
+    theMage.health -= dam;
+  }
   if (theMage.health < 1) theMage.isAlive = false;
 }
 
@@ -379,7 +406,7 @@ int calculateDamage (int damage) {
   else if (rando > 5 && rando < 8) return damage + 1;
   else if (rando > 7 && rando < 10) return damage +2;
 }
-//IGNORE INCREDIBLE INELEGANT SOLUTION TO MEMORY PROBLEM
+//IGNORE INCREDIBLY INELEGANT SOLUTION TO MEMORY PROBLEM
 enemy* createEncounter(string firstType, string firstName, string secondType, string secondName, string thirdType, string thirdName) {
   static enemy encounter[3] = {
     enemy(firstType, firstName),
@@ -424,7 +451,7 @@ enemy* createEncounter5(string firstType, string firstName, string secondType, s
   };
   return encounter;
 }
-//THANKS
+//THANKS.. sigh
 
 int main() {
   srand(time(NULL));
