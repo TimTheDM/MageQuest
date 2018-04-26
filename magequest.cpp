@@ -125,9 +125,28 @@ void hellFire(enemy*);
 
 bool windCloakCheck() {
   int check = (rand() % 10) + 1;
-  if (check = 10) {
-    return true;
-  } else return false;
+  if (check = 10 && theMage.hasCloak) {
+    return false;
+  } else return true;
+}
+
+void hellFire(enemy*caster) {
+  int dam = calculateDamage(8);
+  if (windCloakCheck()) {
+    if (caster->name == "Beatrice") {
+      if(caster->magic < 3) {
+        cout << "Beatrice cackles, and raises her palms, a puff of steam harmlessly streaming from her hands.\n";
+      } else {
+        cout << "Beatrice cackles, and raises her palms, a gout of hellfire springs forth, inflicting " << dam << " damage\n";
+        theMage.health -= dam;
+        caster->magic -= 3;
+      }
+    } else {
+      cout << caster->name << " levels his palm, and a gout of hellfire springs forth, inflicting " << dam << " damage\n";
+      caster->magic -= 3;
+      theMage.health -= dam;
+    }
+  }
 }
 
 void quaff() {
@@ -284,7 +303,7 @@ string getTarget(enemy * anEncounter) {
 void attack(enemy * attacker) {
   int dam = calculateDamage(attacker->strength)-theMage.defense;
   if (dam < 0) dam = 0;
-  if (windCloakCheck) {
+  if (windCloakCheck()) {
     cout << "As " << attacker->name << " moves to attack, the Mage nimbly sidesteps out of the way\n";
   } else {
     cout << attacker->name << " attacks The Mage, inflicting " << dam << " damage!\n";
