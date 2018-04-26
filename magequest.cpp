@@ -121,7 +121,39 @@ string artifactChoice();
 bool windCloakCheck();
 void quaff();
 void hellFire(enemy*);
+void nani();
 //--------------------
+
+string artifactChoice() {
+  cout << "You are ushered into the treasury. Your attendant bids their head, and asks you to take one artifact from the treasury\n";
+  cout << "\n The light sword- A bane to the dark creatures that serve Gerran\n";
+  cout << "\n The wind cloak- A cloak that allows you to move as nimbly as the wind itself\n";
+  cout << "\n The mana potion- A powerful potion that can restore your mana in a pinch\n";
+  cout << "\n Which shall you take?: ";
+  string choice;
+  getline(cin, choice);
+  while (true) {
+    choice = lowerCase(choice);
+    if (choice == "light sword" || choice == "wind cloak" || choice == "mana potion") {
+      if (choice == "light sword") {
+        theMage.strength += 2;
+        cout << "\"Excellent choice, may your enemies fall to your ATTACKS\", says the attendant\n";
+      } else if (choice == "wind cloak") {
+        theMage.hasCloak = true;
+        cout << "\"Excellent choice, may your enemies not find you an easy target to pinpoint\", says the attendant\n";
+      } else if (choice == "mana potion") {
+        theMage.hasPotion = true;
+        cout << "\"Excellent choice, may your wellspring of magic never run dry\", says the attendant\n";
+      }
+    } else {
+      cout << "That is not one of the artifacts, choose an artifact: ";
+    }
+  }
+}
+
+void nani() {
+  cout << "Beatrice's eyes widen, and she grunts, \"Why aren't you dead yet?! Damnit!\" \n";
+}
 
 bool windCloakCheck() {
   int check = (rand() % 10) + 1;
@@ -146,7 +178,11 @@ void hellFire(enemy*caster) {
       caster->magic -= 3;
       theMage.health -= dam;
     }
+  } else {
+    cout << "The Mage narrowly avoids a gout of hellfire\n";
+    caster->magic -= 3;
   }
+  if (theMage.health < 1) theMage.isAlive = false;
 }
 
 void quaff() {
@@ -319,6 +355,10 @@ void enemyAction(string action, enemy * curEn) {
     golemGrumble(curEn);
   } else if (action == "rage") {
     rage(curEn);
+  } else if (action == "nani?!") {
+    nani();
+  } else if (action == "hellfire") {
+    hellFire(curEn);
   }
 }
 
@@ -406,6 +446,19 @@ enemy::enemy (string type, string name) {
       this->actionQue[i] = "attack";
     }
   }
+  else if (type == "beatrice") {
+    this->health = 30;
+    this->defense = 0;
+    this->strength = 1;
+    this->aP = 0;
+    this->type = "beatrice";
+    this->name = name;
+    this->magic = 9;
+    for (int i = 0;i < 3;i++) {
+      this->actionQue[i] = "hellfire";
+    }
+    this->actionQue[3] = "nani?!";
+  }
 }
 
 string lowerCase (string theStr) {
@@ -470,13 +523,15 @@ enemy* createEncounter5(string firstType, string firstName, string secondType, s
   };
   return encounter;
 }
-//THANKS.. sigh
+//THANKS
 
 int main() {
   srand(time(NULL));
+  artifactChoice();
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblinRager", "Goblin Berserker", "goblin", "goblinC");
-  enemy * encounter2 = createEncounter2("goblin", "goblinA", "weakGolem", "Weak Golem", "goblin", "goblinB");
-  if (battle(encounter1)) {
+  enemy * encounter2 = createEncounter2("goblin", "goblin", "weakGolem", "Weak GolemA", "weakGolem", "Weak GolemB");
+  enemy * encounter3 = createEncounter3("beatrice", "Beatrice", "", "", "", "");
+  if (battle(encounter3)) {
     cout << "The mage is victorious!";
   } else {
     cout << "The mage has perished...";
