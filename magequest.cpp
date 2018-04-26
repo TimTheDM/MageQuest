@@ -113,7 +113,18 @@ void fireball(enemy*);
 void quaff();
 bool mpCheck(string);
 void notEnoughMagic(string);
+void golemGrumble(enemy*);
+void rage(enemy*);
 //--------------------
+
+void rage(enemy * enraged) {
+  cout << enraged->name << " flies into a rage!\n";
+  enraged->strength += 2;
+}
+
+void golemGrumble(enemy * golem) {
+  cout << golem->name << " slowly moves into position to attack\n";
+}
 
 bool mpCheck(string spell) {
   if (spell == "fireball") {
@@ -258,6 +269,10 @@ void attack(enemy * attacker) {
 void enemyAction(string action, enemy * curEn) {
   if (action == "attack") {
     attack(curEn);
+  } else if (action == "golemGrumble") {
+    golemGrumble(curEn);
+  } else if (action == "rage") {
+    rage(curEn);
   }
 }
 
@@ -325,10 +340,25 @@ enemy::enemy (string type, string name) {
   } else if (type == "weakGolem") {
     this->health = 15;
     this->defense = 1;
-    this->strength = 1;
+    this->strength = 4;
     this->aP = 0;
     this->type = "weakGolem";
     this->name = name;
+    this->actionQue[0] = "golemGrumble";
+    this->actionQue[1] = "attack";
+    this->actionQue[2] = "golemGrumble";
+    this->actionQue[3] = "attack";
+  } else if (type == "goblinRager") {
+    this->health = 7;
+    this->defense = 0;
+    this->strength = 6;
+    this->aP = 0;
+    this->type = "goblinRager";
+    this->name = name;
+    this->actionQue[0] = "rage";
+    for (int i = 1;i < 4;i++) {
+      this->actionQue[i] = "attack";
+    }
   }
 }
 
@@ -394,14 +424,13 @@ enemy* createEncounter5(string firstType, string firstName, string secondType, s
   };
   return encounter;
 }
-
 //THANKS
 
 int main() {
   srand(time(NULL));
-  enemy * encounter1 = createEncounter("goblin", "goblinA", "goblin", "goblinB", "goblin", "goblinC");
+  enemy * encounter1 = createEncounter("goblin", "goblinA", "goblinRager", "Goblin Berserker", "goblin", "goblinC");
   enemy * encounter2 = createEncounter2("goblin", "goblinA", "weakGolem", "Weak Golem", "goblin", "goblinB");
-  if (battle(encounter2)) {
+  if (battle(encounter1)) {
     cout << "The mage is victorious!";
   } else {
     cout << "The mage has perished...";
