@@ -129,7 +129,27 @@ void doom(enemy*);
 void healBetween();
 int stringCount(string);
 string targetExtractor(string*);
+void gerran0Magic(enemy*);
+void enemyDefense(enemy*);
 //--------------------
+
+void gerran0Magic(enemy * gerran) {
+  cout << "As Gerran raises his palms, his spell fizzles out.\n";
+  cout << "\"Curse you, Mage! This isn't over, I can still gut you like a pig!\"\n";
+  for (int i = 0;i < 4;i++) {
+    gerran->actionQue[i] = "attack";
+  }
+}
+
+void enemyDefense(enemy * caster) {
+  if(caster->magic > 1) {
+    caster->defense += 1;
+    cout << "The air surrounding " << caster->name << " distorts. Defense raised\n";
+    caster->magic -= 2;
+  } else {
+    gerran0Magic(caster);
+  }
+}
 
 int stringCount(string count) {
   for (int i = 0;true;i++) {
@@ -151,9 +171,14 @@ void enemyHeal(enemy * healer) {
     healer->health += heal;
     if (healer->health > 15) healer->health = 15;
   } else {
-    cout << "The dark wizard surrounds himself in a pale light, restoring " << heal << " HP\n";
-    healer->health += heal;
-    if (healer->health > 30) healer->health = 30;
+    if (healer->magic > 1) {
+      cout << "The dark wizard surrounds himself in a pale light, restoring " << heal << " HP\n";
+      healer->health += heal;
+      if (healer->health > 30) healer->health = 30;
+      healer->magic -= 2;
+    } else {
+      gerran0Magic(healer);
+    }
   }
 }
 
@@ -224,9 +249,13 @@ void hellFire(enemy*caster) {
         caster->magic -= 3;
       }
     } else {
-      cout << caster->name << " levels his palm, and a gout of hellfire springs forth, inflicting " << dam << " damage\n";
-      caster->magic -= 3;
-      theMage.health -= dam;
+      if (caster->magic > 2) {
+        cout << caster->name << " levels his palm, and a gout of hellfire springs forth, inflicting " << dam << " damage\n";
+        caster->magic -= 3;
+        theMage.health -= dam;
+      } else {
+        gerran0Magic(caster);
+      }
     }
   } else {
     cout << "The Mage narrowly avoids a gout of hellfire\n";
@@ -465,6 +494,8 @@ void enemyAction(string action, enemy * curEn) {
     doom(curEn);
   } else if (action == "enemyHeal") {
     enemyHeal(curEn);
+  } else if (action == "defenseUp") {
+    enemyDefense(curEn);
   }
 }
 
@@ -499,9 +530,9 @@ void actionHandler(string action, string target, enemy * enc) {
 }
 
 void mageAttack (enemy * tar) {
-  int damage = calculateDamage(theMage.strength);
+  int damage = calculateDamage(theMage.strength) - tar->defense;
   cout << "The mage strikes " << tar->name << ", inflicting "  << damage << " damage!\n";
-  tar->health -= (damage-tar->defense);
+  tar->health -= damage;
   if (tar->health < 1) {
     tar->isAlive = false;
     cout << tar->name << " perishes!\n";
@@ -599,6 +630,18 @@ enemy::enemy (string type, string name) {
     this->actionQue[2] = "golemGrumble";
     this->actionQue[3] = "attack";
     this->name = name;
+  } else if (type == "darkWizard") {
+    this->health = 30;
+    this->defense = 0;
+    this->strength = 5;
+    this->aP = 0;
+    this->magic = 20;
+    this->type = "darkWizard";
+    this->name = name;
+    this->actionQue[0] = "defenseUp";
+    this->actionQue[1] = "hellfire";
+    this->actionQue[2] = "enemyHeal";
+    this->actionQue[3] = "attack";
   }
 }
 
@@ -727,6 +770,8 @@ int main() {
   enemy * encounter2 = createEncounter2("goblin", "goblin", "weakGolem", "Weak GolemA", "weakGolem", "Weak GolemB");
   enemy * encounter3 = createEncounter3("beatrice", "Beatrice", "", "", "", "");
   enemy * encounter4 = createEncounter4("doomSeer", "Doom Seer", "goblinElite", "Goblin Elite", "strongGolem", "Strong Golem");
+  enemy * encounter5 = createEncounter5("darkWizard", "Gerran", "", "", "", "");
+  battle(encounter5);
   if (partOne(encounter1)) {
     cout << "The Mage has defeated his opponents, the goblins!\n";
     linePause();
