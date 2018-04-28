@@ -378,9 +378,19 @@ string getPlayerAction() {
   }
 }
 
+int stringToInt(string toCast) {
+  if (stringCount(toCast) == 1) {
+    char b = toCast[0];
+    int a = b - '0';
+    //int ia = a - '0';
+    return a;
+  }
+  return 4;
+}
+
 string getTarget(enemy * anEncounter, string target) {
   for (int i = 0;i < 3;i++) {
-    if (target == lowerCase(anEncounter[i].name) && anEncounter[i].isAlive) {
+    if ( (target == lowerCase(anEncounter[i].name) || stringToInt(target) == (i+1) )  && anEncounter[i].isAlive) {
       return anEncounter[i].name;
     }
   }
@@ -389,7 +399,7 @@ string getTarget(enemy * anEncounter, string target) {
     getline(cin, target);
     target = lowerCase(target);
     for (int i = 0;i < 3;i++) {
-      if (target == lowerCase(anEncounter[i].name) && anEncounter[i].isAlive) {
+      if ( (target == lowerCase(anEncounter[i].name) || stringToInt(target) == (i+1) )  && anEncounter[i].isAlive) {
         return anEncounter[i].name;
       }
     }
@@ -502,12 +512,12 @@ void displayBattle (enemy * encounter, Mage curMage) {
   cout << "-------------Enemies-------------\n";
   for (int i = 0;i < 3;i++) {
     if (encounter[i].isAlive) {
-      cout << encounter[i].name << " HP:" << encounter[i].health << "\n";
+      cout << i+1 << ": " << encounter[i].name << " HP:" << encounter[i].health << "\n";
     }
   }
   cout << "-------------The Mage------------\n";
   cout << "HP:" << curMage.health << "/20 MP:" << curMage.magic << "/30\n";
-  cout << "Actions: Attack | Quaff\n" << "Spells: Mystic missile | Heal | Defense Up | Fireball\n";
+  cout << "Actions: Attack | Quaff\n" << "Spells: Mystic missile: 2 | Heal: 1 | Defense Up: 1 | Fireball: 6\n";
 }
 
 enemy::enemy (string type, string name) {
