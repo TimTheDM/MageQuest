@@ -97,6 +97,7 @@ class enemy {
 //--------------------
 
 //-----Prototypes-----
+void linePause();
 void enemyTurn(enemy*);
 bool battle(enemy*);
 string getTarget(enemy*);
@@ -127,6 +128,13 @@ void enemyHeal(enemy*);
 void doom(enemy*);
 void healBetween();
 //--------------------
+
+void linePause() {
+  cout << "Press enter to continue";
+  string a;
+  getline(cin, a);
+  return;
+}
 
 void enemyHeal(enemy * healer) {
   int heal = calculateDamage(6);
@@ -294,7 +302,10 @@ void mysticMissile(enemy * target) {
   cout << "A light emanates from the Mage's hands, striking " << target->name << ", and inflicting, "  << damage << " damage!\n";
   target->health -= damage;
   theMage.magic -= 2;
-  if (target->health < 1) target->isAlive = false;
+  if (target->health < 1) {
+    target->isAlive = false;
+    cout << target->name << " perishes!\n";
+  }
 }
 
 void enemyTurn(enemy * enemies) {
@@ -358,13 +369,15 @@ string getTarget(enemy * anEncounter) {
     getline(cin, target);
     target = lowerCase(target);
     for (int i = 0;i < 3;i++) {
-      if (target == lowerCase(anEncounter[i].name)) {
+      if (target == lowerCase(anEncounter[i].name) && anEncounter[i].isAlive) {
         return anEncounter[i].name;
       }
     }
     cout << "Not a valid target, these are the valid targets: ";
     for (int i = 0;i < 3;i++) {
-      cout << anEncounter[i].name << ", ";
+      if (anEncounter[i].isAlive) {
+        cout << anEncounter[i].name << ", ";
+      }
     }
     cout << "\n";
   }
@@ -595,16 +608,16 @@ enemy* createEncounter5(string firstType, string firstName, string secondType, s
 }
 
 void healBetween() {
-  cout << "Would you like to cast Heal/Quaff before your next fight? No for continue, and heal/quaff respectively";
+  cout << "Would you like to cast Heal/Quaff before your next fight? No to continue, or heal/quaff\n";
   string action;
   while (action != "no" || action == "n") {
     getline(cin, action);
     action = lowerCase(action);
     if (action == "heal") heal();
     if (action == "quaff") quaff();
+    cout << "HP:" << theMage.health << "/20 " << theMage.magic << "/30\n"; 
   }
 }
-//THANKS
 
 bool partOne(enemy * enc) {
   cout << "The dark wizard Gerran has been terrorizing the countryside, and threatened to burn the puppy orphanage.\n";
@@ -613,10 +626,12 @@ bool partOne(enemy * enc) {
   cout << "\n\"Ah! My court wizard, excellent. I need you to stop this nefarious warlock, Gerran. I shall allow you\n";
   cout << "one mystic artifact from my treasury, for you to keep. May the gods smile on your journey, good Mage.\"\n";
   cout << "The king ushers his attendant to lead you to the treasury.\n";
+  linePause();
   artifactChoice();
   cout << "----------------------------------------\n";
   cout << "Along the road on your journey, a pack of goblins assault you, the leader of the pack grins gleefully\n";
   cout << "\"Gerran sends his regards, Mage! Now die!\" it says as it charges you.\n";
+  linePause();
   return battle(enc);
 }
 
@@ -624,6 +639,7 @@ bool partTwo(enemy * enc) {
   theMage.defense = 0;
   cout << "As the Mage approaches Gerran's tower, he is confronted with a rickety bridge, guarded by Gerrans servants\n";
   cout << "The Mage prepares for battle\n";
+  linePause();
   return battle(enc);
 }
 
@@ -632,6 +648,7 @@ bool partThree(enemy * enc) {
   cout << "\nAcross the bridge, standing in front of Gerran tower, a demoness glowers at you\n";
   cout << "She smirks, \"No more games, Mage. I'm going to deliver your charred corpse to Gerran\"\n";
   cout << "She levels her palms, \"See you in hell!\"\n";
+  linePause();
   return battle(enc);
 }
 
@@ -641,11 +658,12 @@ bool partFour(enemy * enc) {
   cout << "I suspect you wont fare so well against my greatest servants however.. so this is our goodbye. I'll be sure to\n";
   cout << "feed your remains to your precious puppies before I crush them! Mwahahahahahahaha!\"\n\n";
   cout << "The Mage soon finds himself face to face against Gerrans elite monsters..\n";
+  linePause();
   return battle(enc);
 }
 
 int main() {
-  int a;
+  string a;
   srand(time(NULL));
   enemy * encounter1 = createEncounter("goblin", "goblinA", "goblinRager", "Goblin Berserker", "goblin", "goblinC");
   enemy * encounter2 = createEncounter2("goblin", "goblin", "weakGolem", "Weak GolemA", "weakGolem", "Weak GolemB");
@@ -653,33 +671,37 @@ int main() {
   enemy * encounter4 = createEncounter4("doomSeer", "Doom Seer", "goblinElite", "Goblin Elite", "strongGolem", "Strong Golem");
   if (partOne(encounter1)) {
     cout << "The Mage has defeated his opponents, the goblins!\n";
+    linePause();
   } else {
     cout << "The Mage has perished!... as well as the puppies.";
-    cin >> a;
+    getline(cin, a);
     return 0;
   }
   healBetween();
   if (partTwo(encounter2)) {
     cout << "The Mage defeats Gerran's guards, and proceeds across the bridge\n";
+    linePause();
   } else {
     cout << "The Mage has perished, in sight of Gerrans wicked tower!";
-    cin >> a;
+    getline(cin, a);
     return 0;
   }
   cout << "-----------------------------------------\n";
   healBetween();
   if (partThree(encounter3)) {
     cout << "After successfully defeating Beatrice, the Mage takes a moment to steel himself, before entering Gerran's tower\n";
+    linePause();
   } else {
     cout << "The Mage perishes in Beatrice's hellfire.\n";
-    int a;
-    cin >> a;
+    getline(cin, a);
+    return 0;
   }
   healBetween();
   if(partFour(encounter4)) {
     cout << "With Gerran's elite servants dispatched, the Mage prepares himself for his confrontation with Gerran\n";
   } else {
     cout << "The Mage at least made good puppy chow, before the puppies were incinerated...";
+    getline(cin, a);
     return 0;
   }
   healBetween();
