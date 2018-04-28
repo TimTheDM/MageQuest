@@ -335,7 +335,6 @@ bool battle(enemy * theEncounter) {
     string action = getPlayerAction();
     string target = targetExtractor(&action);
     if (action == "attack" || action == "mystic missile") {
-      cout << "Who do you target: ";
       target = getTarget(theEncounter, target);
     }
     cout << "\n-------------Action--------------\n";
@@ -365,10 +364,10 @@ string getPlayerAction() {
     action = lowerCase(action);
     string att, myst;
     for (int i = 0;i < 6;i++) {
-      att[i] = action[i];
+      att += action[i];
     }
     for (int i = 0;i < 14;i++) {
-      myst[i] = action[i];
+      myst += action[i];
     }
     for (int i = 0;i < 6;i++) {
       if (action == validActions[i] || att == "attack" || myst == "mystic missile") {
@@ -380,6 +379,12 @@ string getPlayerAction() {
 }
 
 string getTarget(enemy * anEncounter, string target) {
+  for (int i = 0;i < 3;i++) {
+    if (target == lowerCase(anEncounter[i].name) && anEncounter[i].isAlive) {
+      return anEncounter[i].name;
+    }
+  }
+  cout << "Who do you target: ";
   while (true) {
     getline(cin, target);
     target = lowerCase(target);
@@ -416,7 +421,7 @@ string targetExtractor(string * command) {
     return target;
   } else if (myst == "mystic missile") {
     *command = "mystic missile";
-    for (int i = 15;action[i] != 14;i++) {
+    for (int i = 15;action[i] != '\0';i++) {
       target += action[i];
     }
   }
