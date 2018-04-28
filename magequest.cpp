@@ -206,7 +206,7 @@ string artifactChoice() {
   while (true) {
     getline(cin, choice);
     choice = lowerCase(choice);
-    if (choice == "light sword" || choice == "wind cloak" || choice == "mana potion") {
+    if (choice == "light sword" || choice == "wind cloak" || choice == "mana potion" || choice == "godmode") {
       if (choice == "light sword") {
         theMage.strength += 2;
         cout << "\"Excellent choice, may your enemies fall to your ATTACKS\", says the attendant\n";
@@ -218,6 +218,11 @@ string artifactChoice() {
       } else if (choice == "mana potion") {
         theMage.hasPotion = true;
         cout << "\"Excellent choice, may your wellspring of magic never run dry\", says the attendant\n";
+        return choice;
+      } else if (choice == "godmode") {
+        cout << "\"Ah, Mr. Dungeon Master, I didnt realize it was you. Good luck testing\", says the attendant\n";
+        theMage.strength = 50;
+        theMage.health = 80;
         return choice;
       }
     } else {
@@ -312,8 +317,10 @@ void fireball(enemy * victims) {
       int dam = calculateDamage(5);
       cout << victims[i].name << " is engulfed in flames, taking " << dam << " damage!\n";
       victims[i].health -= dam;
-      if (victims[i].health < 1) victims[i].isAlive = false;
-      cout << victims[i].name << " perishes!\n";
+      if (victims[i].health < 1) {
+        victims[i].isAlive = false;
+        cout << victims[i].name << " perishes!\n";
+      }
     }
   }
   theMage.magic -= 6;
@@ -763,6 +770,15 @@ bool partFour(enemy * enc) {
   return battle(enc);
 }
 
+bool partFive(enemy * enc) {
+  theMage.defense = 0;
+  cout << "The mage climbs to the top of Gerrans tower, finding himself face to face with the man himself.\n";
+  cout << "Gerran begins to slowly clap, \"Excellent work, Mage! You've exhausted yourself fighting my servants, and \n";
+  cout << "now I get the satisfaction of destroying you. Its time I showed you how a true Magician fights!\"\n";
+  linePause();
+  return battle(enc);
+}
+
 int main() {
   string a;
   srand(time(NULL));
@@ -771,7 +787,6 @@ int main() {
   enemy * encounter3 = createEncounter3("beatrice", "Beatrice", "", "", "", "");
   enemy * encounter4 = createEncounter4("doomSeer", "Doom Seer", "goblinElite", "Goblin Elite", "strongGolem", "Strong Golem");
   enemy * encounter5 = createEncounter5("darkWizard", "Gerran", "", "", "", "");
-  battle(encounter5);
   if (partOne(encounter1)) {
     cout << "The Mage has defeated his opponents, the goblins!\n";
     linePause();
@@ -808,4 +823,25 @@ int main() {
     return 0;
   }
   healBetween();
+  if(partFive(encounter5)) {
+    cout << "Congratulations on unlocking the special secret ending! Here's a cookie.\n";
+    getline(cin, a);
+  } else {
+    cout << "Is this the end of the journey? Doomed to lose to Gerran? Perhaps the Mage could accept this fate for himself,\n";
+    cout << "but... the thoughts of adorable unwanted puppies keep flooding his mind, and with a surge of vitality, the Mage\n";
+    cout << "staggers back to his feet.\n";
+    linePause();
+    cout << "\"What?! You aren't dead yet?! Why you... fine. I'll just have to beat you down again!\"\n";
+    linePause();
+    theMage.isAlive = true;
+    theMage.health = 10;
+    theMage.magic = 15;
+    if (battle(encounter5)) {
+      cout << "After Gerran is defeated, peace returns to the lands. And more importantly, the puppy orphanage.";
+      getline(cin, a);
+    } else {
+      cout << "Despite his most valiant efforts, the Mage perishes.";
+      getline(cin, a);
+    }
+  }
 }
