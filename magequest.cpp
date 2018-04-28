@@ -100,7 +100,7 @@ class enemy {
 void linePause();
 void enemyTurn(enemy*);
 bool battle(enemy*);
-string getTarget(enemy*);
+string getTarget(enemy*, string);
 string getPlayerAction();
 void attack(enemy*);
 void enemyAction(string, enemy*);
@@ -127,7 +127,15 @@ void nani();
 void enemyHeal(enemy*);
 void doom(enemy*);
 void healBetween();
+int stringCount(string);
+string targetExtractor(string*);
 //--------------------
+
+int stringCount(string count) {
+  for (int i = 0;true;i++) {
+    if (count[i] == '\0') return i;
+  }
+}
 
 void linePause() {
   cout << "Press enter to continue";
@@ -276,6 +284,7 @@ void fireball(enemy * victims) {
       cout << victims[i].name << " is engulfed in flames, taking " << dam << " damage!\n";
       victims[i].health -= dam;
       if (victims[i].health < 1) victims[i].isAlive = false;
+      cout << victims[i].name << " perishes!\n";
     }
   }
   theMage.magic -= 6;
@@ -324,10 +333,10 @@ bool battle(enemy * theEncounter) {
     displayBattle(theEncounter, theMage);
     cout << "What action shall you take: ";
     string action = getPlayerAction();
-    string target = "Mage";
+    string target = targetExtractor(&action);
     if (action == "attack" || action == "mystic missile") {
       cout << "Who do you target: ";
-      target = getTarget(theEncounter);
+      target = getTarget(theEncounter, target);
     }
     cout << "\n-------------Action--------------\n";
     actionHandler(action, target, theEncounter);
@@ -354,8 +363,15 @@ string getPlayerAction() {
   while (true) {
     getline(cin, action);
     action = lowerCase(action);
+    string att, myst;
     for (int i = 0;i < 6;i++) {
-      if (action == validActions[i]) {
+      att[i] = action[i];
+    }
+    for (int i = 0;i < 14;i++) {
+      myst[i] = action[i];
+    }
+    for (int i = 0;i < 6;i++) {
+      if (action == validActions[i] || att == "attack" || myst == "mystic missile") {
         return action;
       }
     }
@@ -363,8 +379,7 @@ string getPlayerAction() {
   }
 }
 
-string getTarget(enemy * anEncounter) {
-  string target;
+string getTarget(enemy * anEncounter, string target) {
   while (true) {
     getline(cin, target);
     target = lowerCase(target);
@@ -381,6 +396,31 @@ string getTarget(enemy * anEncounter) {
     }
     cout << "\n";
   }
+}
+
+string targetExtractor(string * command) {
+  string att, myst;
+  string target;
+  string action = *command;
+  for (int i = 0;i < 6;i++) {
+    att += action[i];
+  }
+  for (int i = 0;i < 14;i++) {
+    myst += action[i];
+  }
+  if (att == "attack") {
+    *command = "attack";
+    for (int i = 7;action[i] != '\0';i++) {
+      target += action[i];
+    }
+    return target;
+  } else if (myst == "mystic missile") {
+    *command = "mystic missile";
+    for (int i = 15;action[i] != 14;i++) {
+      target += action[i];
+    }
+  }
+  return target;
 }
 
 void attack(enemy * attacker) {
@@ -447,7 +487,10 @@ void mageAttack (enemy * tar) {
   int damage = calculateDamage(theMage.strength);
   cout << "The mage strikes " << tar->name << ", inflicting "  << damage << " damage!\n";
   tar->health -= (damage-tar->defense);
-  if (tar->health < 1) tar->isAlive = false;
+  if (tar->health < 1) {
+    tar->isAlive = false;
+    cout << tar->name << " perishes!\n";
+  }
 }
 
 void displayBattle (enemy * encounter, Mage curMage) {
