@@ -655,9 +655,10 @@ enemy* createEncounter5(string firstType, string firstName, string secondType, s
 void healBetween() {
   cout << "Would you like to cast Heal/Quaff before your next fight? No to continue, or heal/quaff\n";
   string action;
-  while (action != "no" || action == "n") {
+  while (true) {
     getline(cin, action);
     action = lowerCase(action);
+    if (action == "no" || action == "n" || action == "") return;
     if (action == "heal") heal();
     if (action == "quaff") quaff();
     cout << "HP:" << theMage.health << "/20 " << theMage.magic << "/30\n"; 
