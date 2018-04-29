@@ -157,7 +157,8 @@ string artifactChoice() {
         cout << "\"Excellent choice, may your wellspring of magic never run dry\", says the attendant\n";
         return choice;
       } else {
-      cout << "That is not one of the artifacts, choose an artifact: ";
+        cout << "That is not one of the artifacts, choose an artifact: ";
+      }
     }
   }
 }
@@ -167,8 +168,8 @@ void nani() {
 }
 
 bool windCloakCheck() {
-  int check = (rand() % 10) + 1;
-  if (check == 10 && (theMage.hasCloak == true)) {
+  int check = (rand() % 5) + 1;
+  if (check == 5 && (theMage.hasCloak == true)) {
     return true;
   } else return false;
 }
