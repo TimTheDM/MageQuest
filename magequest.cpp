@@ -143,7 +143,7 @@ string artifactChoice() {
   while (true) {
     getline(cin, choice);
     choice = lowerCase(choice);
-    if (choice == "light sword" || choice == "wind cloak" || choice == "mana potion" || choice == "godmode") {
+    if (choice == "light sword" || choice == "wind cloak" || choice == "mana potion") {
       if (choice == "light sword") {
         theMage.strength += 2;
         cout << "\"Excellent choice, may your enemies fall to your ATTACKS\", says the attendant\n";
@@ -156,13 +156,7 @@ string artifactChoice() {
         theMage.hasPotion = true;
         cout << "\"Excellent choice, may your wellspring of magic never run dry\", says the attendant\n";
         return choice;
-      } else if (choice == "godmode") {
-        cout << "\"Ah, Mr. Dungeon Master, I didnt realize it was you. Good luck testing\", says the attendant\n";
-        theMage.strength = 50;
-        theMage.health = 80;
-        return choice;
-      }
-    } else {
+      } else {
       cout << "That is not one of the artifacts, choose an artifact: ";
     }
   }
